@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { PerfisService, Perfil } from 'src/app/services/perfil.service';
+import { forkJoin } from 'rxjs';
+import { Permissao, PermissaoService } from 'src/app/services/permissao.service';
 
 @Component({
   selector: 'app-perfis',
@@ -11,7 +13,15 @@ export class PerfisComponent implements OnInit {
   editando = false;
   tiposDePerfil: string[] = [];
 
-  constructor(private perfisService: PerfisService) {}
+  permissoes: Permissao[] = [];
+  perfilSelecionado: Perfil | null = null;
+  mostrarPermissoes = false;
+  carregandoPermissoes = false;
+
+  constructor(
+    private perfisService: PerfisService,
+    private permissaoService: PermissaoService
+  ) {}
 
   ngOnInit(): void {
     this.listarPerfis();
@@ -22,19 +32,23 @@ export class PerfisComponent implements OnInit {
     this.perfisService.listar().subscribe(data => this.perfis = data);
   }
 
-  salvar(): void {
-    if (this.editando && this.perfilForm.perfilId) {
-      this.perfisService.atualizar(this.perfilForm.perfilId, this.perfilForm).subscribe(() => {
-        this.cancelar();
-        this.listarPerfis();
-      });
-    } else {
-      this.perfisService.criar(this.perfilForm).subscribe(() => {
-        this.cancelar();
-        this.listarPerfis();
-      });
-    }
-  }
+ salvar(): void {
+   if (!this.perfilForm.permissoes) this.perfilForm.permissoes = [];
+   if (!this.perfilForm.usuarios) this.perfilForm.usuarios = [];
+
+   if (this.editando && this.perfilForm.perfilId) {
+     this.perfisService.atualizar(this.perfilForm.perfilId, this.perfilForm).subscribe(() => {
+       this.cancelar();
+       this.listarPerfis();
+     });
+   } else {
+     this.perfisService.criar(this.perfilForm).subscribe(() => {
+       this.cancelar();
+       this.listarPerfis();
+     });
+   }
+ }
+
 
   editar(perfil: Perfil): void {
     this.perfilForm = { ...perfil };
@@ -57,4 +71,34 @@ export class PerfisComponent implements OnInit {
     this.perfilForm = { nome: '', descricao: '', protegido: false, tipo: '' };
     this.editando = false;
   }
+
+  abrirPermissoes(perfil: Perfil): void {
+    this.carregandoPermissoes = true;
+    this.perfilSelecionado = perfil;
+    this.mostrarPermissoes = true;
+
+    this.permissaoService.carregarPermissoesComMarcadas(perfil.perfilId!).subscribe(permissoes => {
+      this.permissoes = permissoes;
+      this.carregandoPermissoes = false;
+    });
+  }
+
+  salvarPermissoes(): void {
+    if (!this.perfilSelecionado) return;
+
+    this.permissaoService
+      .atualizarPermissoes(this.perfilSelecionado.perfilId!, this.permissoes)
+      .subscribe(() => {
+        alert('Permissões atualizadas com sucesso!');
+        this.fecharPermissoes();
+      });
+  }
+
+  fecharPermissoes(): void {
+    this.mostrarPermissoes = false;
+    this.perfilSelecionado = null;
+    this.permissoes = [];
+  }
+
+
 }

@@ -13,15 +13,30 @@
       <input [(ngModel)]="perfilForm.descricao" name="descricao" class="form-control" />
     </div>
 
-    <div class="form-check">
-      <input type="checkbox" [(ngModel)]="perfilForm.protegido" name="protegido" class="form-check-input" />
-      <label class="form-check-label">Protegido</label>
+    <div class="d-flex align-items-center mb-3">
+      <input
+        id="protegido"
+        type="checkbox"
+        [(ngModel)]="perfilForm.protegido"
+        name="protegido"
+        class="form-check-input me-2"
+      />
+      <label for="protegido" class="form-check-label mb-0">Protegido</label>
     </div>
 
-    <button type="submit" class="btn btn-success mt-2">
-      {{ editando ? 'Atualizar' : 'Criar' }}
-    </button>
-    <button type="button" (click)="cancelar()" class="btn btn-secondary mt-2" *ngIf="editando">Cancelar</button>
+    <div class="d-flex gap-2">
+      <button type="submit" class="btn btn-success">
+        {{ editando ? 'Atualizar' : 'Criar' }}
+      </button>
+      <button
+        type="button"
+        (click)="cancelar()"
+        class="btn btn-secondary"
+        *ngIf="editando"
+      >
+        Cancelar
+      </button>
+    </div>
   </form>
 
   <!-- Tabela -->
@@ -50,8 +65,41 @@
         <td>
           <button class="btn btn-primary btn-sm" (click)="editar(perfil)">Editar</button>
           <button class="btn btn-danger btn-sm" (click)="deletar(perfil.perfilId)">Excluir</button>
+          <button class="btn btn-warning btn-sm" (click)="abrirPermissoes(perfil)">Controle de Permissões</button>
         </td>
       </tr>
     </tbody>
   </table>
+
+  <div *ngIf="mostrarPermissoes" class="mt-4 border p-3 bg-light rounded shadow-sm">
+    <h4>Permissões do perfil: {{ perfilSelecionado?.nome }}</h4>
+
+    <div class="form-group">
+      <div *ngIf="carregandoPermissoes" class="text-info">Carregando permissões...</div>
+
+      <div class="row">
+        <div class="col-md-6 col-lg-4 mb-2" *ngFor="let p of permissoes">
+          <div class="form-check">
+            <input
+              type="checkbox"
+              class="form-check-input custom-checkbox"
+              [(ngModel)]="p.atribuida"
+              id="perm-{{ p.permissaoId }}"
+            >
+
+            <label class="form-check-label" for="perm-{{ p.permissaoId }}">
+              {{ p.descricao }}
+            </label>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex gap-2 mt-3">
+      <button class="btn btn-success btn-narrow" (click)="salvarPermissoes()">Salvar</button>
+      <button class="btn btn-secondary btn-narrow" (click)="fecharPermissoes()">Cancelar</button>
+    </div>
+
+  </div>
 </div>

@@ -81,3 +81,24 @@ td {
 tr:hover td {
   background-color: rgba(255, 255, 255, 0.3);
 }
+
+.custom-checkbox {
+  border: 2px solid #adb5bd !important;
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+}
+
+.d-flex {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.btn-narrow {
+  width: 25%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

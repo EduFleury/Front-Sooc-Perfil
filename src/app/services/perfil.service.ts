@@ -1,18 +1,21 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { Permissao } from './permissao.service';
 
 export interface Perfil {
   perfilId?: number;
   nome: string;
   descricao: string;
   protegido: boolean;
-  tipo: string;
+  tipo?: string;
+  permissoes?: Permissao[];
+  usuarios?: [];
 }
 
 @Injectable({ providedIn: 'root' })
 export class PerfisService {
-  private apiUrl = 'http://localhost:8081/api/perfis';
+  private apiUrl = 'http://localhost:8080/api/perfis';
 
   constructor(private http: HttpClient) {}
 
