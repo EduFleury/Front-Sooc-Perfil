@@ -7,11 +7,12 @@ export interface Perfil {
   nome: string;
   descricao: string;
   protegido: boolean;
+  tipo: string;
 }
 
 @Injectable({ providedIn: 'root' })
 export class PerfisService {
-  private apiUrl = 'http://localhost:8080/api/perfis';
+  private apiUrl = 'http://localhost:8081/api/perfis';
 
   constructor(private http: HttpClient) {}
 
@@ -33,5 +34,9 @@ export class PerfisService {
 
   deletar(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  listarTiposPerfil(): Observable<string[]> {
+    return this.http.get<string[]>(`${this.apiUrl}/tipos`);
   }
 }

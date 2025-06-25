@@ -32,6 +32,7 @@
         <th>Nome</th>
         <th>Descrição</th>
         <th>Protegido</th>
+        <th>Tipo</th>
         <th>Ações</th>
       </tr>
     </thead>
@@ -41,6 +42,11 @@
         <td>{{ perfil.nome }}</td>
         <td>{{ perfil.descricao }}</td>
         <td>{{ perfil.protegido ? 'Sim' : 'Não' }}</td>
+        <td>
+          <select [(ngModel)]="perfil.tipo" class="form-control">
+            <option *ngFor="let tipo of tiposDePerfil" [value]="tipo">{{ tipo }}</option>
+          </select>
+        </td>
         <td>
           <button class="btn btn-primary btn-sm" (click)="editar(perfil)">Editar</button>
           <button class="btn btn-danger btn-sm" (click)="deletar(perfil.perfilId)">Excluir</button>

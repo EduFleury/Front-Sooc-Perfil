@@ -7,13 +7,15 @@ import { PerfisService, Perfil } from 'src/app/services/perfil.service';
 })
 export class PerfisComponent implements OnInit {
   perfis: Perfil[] = [];
-  perfilForm: Perfil = { nome: '', descricao: '', protegido: false };
+  perfilForm: Perfil = { nome: '', descricao: '', protegido: false, tipo: '' };
   editando = false;
+  tiposDePerfil: string[] = [];
 
   constructor(private perfisService: PerfisService) {}
 
   ngOnInit(): void {
     this.listarPerfis();
+    this.listarTiposPerfil();
   }
 
   listarPerfis(): void {
@@ -45,8 +47,14 @@ export class PerfisComponent implements OnInit {
     }
   }
 
+  listarTiposPerfil(): void {
+    this.perfisService.listarTiposPerfil().subscribe(tipos => {
+      this.tiposDePerfil = tipos;
+    });
+  }
+
   cancelar(): void {
-    this.perfilForm = { nome: '', descricao: '', protegido: false };
+    this.perfilForm = { nome: '', descricao: '', protegido: false, tipo: '' };
     this.editando = false;
   }
 }
